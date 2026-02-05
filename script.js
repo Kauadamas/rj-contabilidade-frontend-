@@ -155,7 +155,7 @@
       progressBar.style.width = '0%';
 
       // NOTE: Replace URL with your backend endpoint that accepts multipart/form-data
-      const UPLOAD_URL = "https://seu-backend.onrender.com/api/lead-upload";
+      const UPLOAD_URL = "https://rj-contabilidade-backend.onrender.com/api/lead-upload";
 
       const xhr = new XMLHttpRequest();
       xhr.open('POST', UPLOAD_URL, true);
