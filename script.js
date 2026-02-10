@@ -1,26 +1,41 @@
-// RJ Contabilidade — Interações (menu, FAQ, ano no footer)
-// Ajustes feitos SOMENTE nos pontos solicitados:
-// 1) Hambúrguer funcionando com segurança (DOM carregado via defer no HTML)
-// 2) Menu "acompanha scroll" (link ativo conforme a seção) incluindo #sobre
 
 (() => {
+  const header = document.getElementById("siteHeader");
+  const menuBtn = document.getElementById("menuBtn");
+  const mobileNav = document.getElementById("mobileNav");
+
+  function setHeaderH() {
+    if (!header) return;
+    const h = header.offsetHeight || 76;
+    document.documentElement.style.setProperty("--headerH", `${h}px`);
+  }
+
+  // roda já e em resize
+  setHeaderH();
+  window.addEventListener("resize", setHeaderH, { passive: true });
+
   // Ano no footer
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   // Menu (hambúrguer)
-  const menuBtn = document.getElementById("menuBtn");
-  const mobileNav = document.getElementById("mobileNav");
-
   if (menuBtn && mobileNav) {
     const closeMenu = () => {
       mobileNav.classList.remove("open");
       menuBtn.setAttribute("aria-expanded", "false");
+      setHeaderH();
+    };
+
+    const openMenu = () => {
+      mobileNav.classList.add("open");
+      menuBtn.setAttribute("aria-expanded", "true");
+      setHeaderH();
     };
 
     menuBtn.addEventListener("click", () => {
-      const isOpen = mobileNav.classList.toggle("open");
-      menuBtn.setAttribute("aria-expanded", String(isOpen));
+      const isOpen = mobileNav.classList.contains("open");
+      if (isOpen) closeMenu();
+      else openMenu();
     });
 
     // Fecha ao clicar em link
@@ -31,6 +46,14 @@
     // Fecha ao apertar ESC
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeMenu();
+    });
+
+    // Fecha ao clicar fora (opcional, melhora UX)
+    document.addEventListener("click", (e) => {
+      if (!mobileNav.classList.contains("open")) return;
+      const target = e.target;
+      const clickedInside = mobileNav.contains(target) || menuBtn.contains(target);
+      if (!clickedInside) closeMenu();
     });
   }
 
@@ -43,7 +66,7 @@
   const navLinks = Array.from(document.querySelectorAll(".nav-link"));
 
   const setActive = () => {
-    const y = window.scrollY + 140; // ajuste para header sticky
+    const y = window.scrollY + (parseInt(getComputedStyle(document.documentElement).getPropertyValue("--headerH")) || 76) + 60;
 
     let currentId = sectionIds[0] || "inicio";
     for (const sec of sections) {
