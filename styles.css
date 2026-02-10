@@ -1,5 +1,3 @@
-
-
 :root{
   --bg: #07130f;
   --bg2:#050f0b;
@@ -209,7 +207,7 @@ strong{ color: rgba(255,255,255,0.92); font-weight: 750; }
 .brand-logo img{
   width: 100%;
   height: 100%;
-  object-fit: contain; /* pra SVG não cortar */
+  object-fit: contain;
   display: block;
 }
 .brand-name{
@@ -242,7 +240,7 @@ strong{ color: rgba(255,255,255,0.92); font-weight: 750; }
 }
 .icon-btn:active{ transform: translateY(0) scale(0.99); }
 
-/* Menu dropdown (fica fixo quando aberto) */
+/* Menu dropdown */
 .mobileNav{
   overflow: hidden;
   max-height: 0px;
@@ -251,7 +249,6 @@ strong{ color: rgba(255,255,255,0.92); font-weight: 750; }
   transition: max-height 420ms var(--ease-out), opacity 260ms var(--ease-out), transform 260ms var(--ease-out);
 }
 .mobileNav.open{
-  /* não “some” quando rolar */
   position: fixed;
   left: 0;
   right: 0;
@@ -557,6 +554,12 @@ section{ padding: 88px 0; }
   display: block;
   border-radius: calc(var(--r-xl) - 8px);
 }
+.media-svg img{
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: calc(var(--r-xl) - 8px);
+}
 .media-caption{
   padding: 14px 16px 16px;
   border-top: 1px solid rgba(255,255,255,0.08);
@@ -794,5 +797,59 @@ textarea{ min-height: 120px; resize: vertical; }
 }
 @media (max-width: 560px){
   .row-2{ grid-template-columns: 1fr; }
-  .wa-txt{ display: none; } /* opcional: só ícone em telas pequenas */
+  .wa-txt{ display: none; }
+}
+/* ===== Ajustes da seção SOBRE (equaliza imagens + remove buraco lateral) ===== */
+
+.about-grid{
+  align-items: stretch;                 /* faz as colunas terem a mesma “altura base” */
+}
+
+.about-copy{
+  height: 100%;                         /* ocupa a altura disponível da coluna */
+  display: flex;
+  flex-direction: column;
+}
+
+.about-points{
+  margin-top: 14px;
+}
+
+.about-actions{
+  margin-top: auto;                     /* empurra os botões para o fim do card */
+  padding-top: 10px;
+}
+
+/* garante que as duas imagens fiquem com o MESMO tamanho visual */
+.about-media{
+  align-content: stretch;
+}
+
+.media-card{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* novo wrapper p/ imagem (mesma altura em ambos os cards) */
+.media-media{
+  padding: 10px;
+}
+
+.media-media img{
+  width: 100%;
+  height: 220px;                        /* ALTURA FIXA = imagens iguais */
+  display: block;
+  border-radius: calc(var(--r-xl) - 8px);
+  object-fit: cover;                    /* corta proporcionalmente sem distorcer */
+}
+
+/* em telas grandes, dá um “respiro” e mantém proporção bonita */
+@media (min-width: 1020px){
+  .media-media img{ height: 240px; }
+}
+
+/* em mobile, mantém altura mais enxuta */
+@media (max-width: 560px){
+  .media-media img{ height: 200px; }
 }

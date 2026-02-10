@@ -1,4 +1,3 @@
-
 (() => {
   const header = document.getElementById("siteHeader");
   const menuBtn = document.getElementById("menuBtn");
@@ -118,7 +117,7 @@
   if (contactForm) {
     contactForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      alert("Mensagem enviada (demo front-end). Integre um back-end/Forms para envio real.");
+      alert("Mensagem enviada (demo front-end).");
     });
   }
 })();
