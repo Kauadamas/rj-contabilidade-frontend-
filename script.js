@@ -65,7 +65,12 @@
   const navLinks = Array.from(document.querySelectorAll(".nav-link"));
 
   const setActive = () => {
-    const y = window.scrollY + (parseInt(getComputedStyle(document.documentElement).getPropertyValue("--headerH")) || 76) + 60;
+    const y =
+      window.scrollY +
+      (parseInt(
+        getComputedStyle(document.documentElement).getPropertyValue("--headerH")
+      ) || 76) +
+      60;
 
     let currentId = sectionIds[0] || "inicio";
     for (const sec of sections) {
@@ -95,29 +100,71 @@
   });
 
   // Reveal on scroll
-  const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  const prefersReduced =
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
   const revealEls = Array.from(document.querySelectorAll(".reveal"));
 
   if (prefersReduced) {
     revealEls.forEach(el => el.classList.add("in-view"));
   } else {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        e.target.classList.add("in-view");
-        io.unobserve(e.target);
-      });
-    }, { threshold: 0.12, rootMargin: "0px 0px -10% 0px" });
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          e.target.classList.add("in-view");
+          io.unobserve(e.target);
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -10% 0px" }
+    );
 
     revealEls.forEach(el => io.observe(el));
   }
 
-  // Submit (demo)
+  // Submit real com upload de arquivos
   const contactForm = document.getElementById("contactForm");
   if (contactForm) {
-    contactForm.addEventListener("submit", (e) => {
+    contactForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      alert("Mensagem enviada (demo front-end).");
+
+      const submitBtn = contactForm.querySelector("button[type='submit']");
+      const originalText = submitBtn ? submitBtn.textContent : null;
+
+      try {
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = "Enviando...";
+        }
+
+        const formData = new FormData(contactForm);
+
+        const response = await fetch(
+          "https://rj-contabilidade-backend.onrender.com/api/lead-upload",
+          {
+            method: "POST",
+            body: formData
+          }
+        );
+
+        const data = await response.json().catch(() => null);
+
+        if (!response.ok) {
+          const msg = (data && data.error) || "Erro ao enviar o formulário.";
+          alert(msg);
+          return;
+        }
+
+        alert("Mensagem enviada com sucesso! Em breve entraremos em contato.");
+        contactForm.reset();
+      } catch (err) {
+        console.error(err);
+        alert("Ocorreu um erro ao enviar. Tente novamente em instantes.");
+      } finally {
+        if (submitBtn && originalText) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      }
     });
   }
 })();
